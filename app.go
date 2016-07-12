@@ -29,6 +29,7 @@ func main() {
 
 	//Start function to clear expired sessions
 	// go db.ReactSession.CullSessions()
+	go db.MongoSession.CullSessions()
 
 	// Middlewares
 	//router.Use(middlewares.Connect)
@@ -37,17 +38,17 @@ func main() {
 	router.Use(middlewares.CORS)
 
 	//Serve static angular files
-	router.StaticFile("/home", pageLoc("/index.html"))
-	router.StaticFile("/login", pageLoc("/index.html"))
-	router.StaticFile("/explore", pageLoc("/index.html"))
+	router.StaticFile("/customer", pageLoc("/index.html"))
+	router.StaticFile("/admin", pageLoc("/index.html"))
+	router.StaticFile("/order", pageLoc("/index.html"))
 
-	router.GET("/dashboard/*d", func(c *gin.Context) {
+	router.GET("/customer/*d", func(c *gin.Context) {
 		http.ServeFile(c.Writer, c.Request, pageLoc("/index.html"))
 	})
-	router.GET("/project/*d", func(c *gin.Context) {
+	router.GET("/admin/*d", func(c *gin.Context) {
 		http.ServeFile(c.Writer, c.Request, pageLoc("/index.html"))
 	})
-	router.GET("/profile/*d", func(c *gin.Context) {
+	router.GET("/order/*d", func(c *gin.Context) {
 		http.ServeFile(c.Writer, c.Request, pageLoc("/index.html"))
 	})
 
@@ -55,10 +56,9 @@ func main() {
 	router.StaticFS("/built/app", http.Dir(pageLoc("/built/app/")))
 	router.StaticFS("/app", http.Dir(pageLoc("/app/")))
 	router.StaticFS("/node_modules", http.Dir(pageLoc("/node_modules")))
-	router.StaticFile("/js/fblogin.js", pageLoc("/js/fblogin.js"))
 
 	//API Endpoints
-	handlers.ApiHandlers(router)
+	handlers.APIHandlers(router)
 
 	//Redirect for logged-in users
 	router.GET("/loggedin", func(c *gin.Context) {

@@ -7,25 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mhl787156/seahorse_server/db"
-	"github.com/mhl787156/seahorse_server/models"
 )
 
-const defaultAvatar string = "https://ecky39.files.wordpress.com/2010/12/1198164224291tv3.jpg"
 const sessionCookieName string = "apx_session"
-
-//Generates a new user struct from data fetched from Facebook
-func BuildUser(details FbDetails, c *db.DbConn) models.User {
-	userDetails := getUserAdvancedDetails(details.User_id)
-	var newUser models.User
-	newUser.Id = c.GetUUID()
-	newUser.FId = details.User_id
-	newUser.Name = userDetails.Name
-	newUser.Email = userDetails.Email
-	newUser.Avatar = defaultAvatar
-	newUser.Private = false
-
-	return newUser
-}
 
 func AuthHandler(c *gin.Context) {
 	// //Get the authentication token from the request
@@ -89,11 +73,11 @@ func AuthenticateUser(token string, rdb *db.DbConn) (string, error) {
 	// 	//If the user exists, return the user id and nil
 	// 	return user.Id, nil
 	// } else {
-	// 	//Otherwise, make a new user with BuildUser, and add it to the database
-	// 	newUser := BuildUser(userDetails, rdb)
-	// 	rdb.WriteUser(newUser)
-	// 	user = &newUser
-	// 	fmt.Println("Writing new user")
+	// //Otherwise, make a new user with BuildUser, and add it to the database
+	// newUser := BuildUser(userDetails, rdb)
+	// rdb.WriteUser(newUser)
+	// user = &newUser
+	// fmt.Println("Writing new user")
 	// }
 	// return user.Id, nil
 	return "", nil
