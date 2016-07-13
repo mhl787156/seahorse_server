@@ -8,7 +8,7 @@ import (
 	// "github.com/mhl787156/seahorse_server/auth"
 	"github.com/mhl787156/seahorse_server/conf"
 	"github.com/mhl787156/seahorse_server/db"
-	// "github.com/mhl787156/seahorse_server/middlewares"
+	"github.com/mhl787156/seahorse_server/middlewares"
 )
 
 var siteRoot string
@@ -31,17 +31,41 @@ func main() {
 	go db.MongoSession.CullSessions()
 
 	// Middlewares
-	//router.Use(middlewares.Connect)
-	// router.Use(middlewares.ErrorHandler)
+	// router.Use(middlewares.Connect)
+	router.Use(middlewares.ErrorHandler)
 	// router.Use(middlewares.AuthMiddleware)
-	// router.Use(middlewares.CORS)
+	router.Use(middlewares.CORS)
 
 	// //Serve static angular files
 	router.StaticFile("/", pageLoc("/dist/dev/index.html"))
+	// router.StaticFile("/home", pageLoc("/dist/dev/index.html"))
+	// router.StaticFile("/admin", pageLoc("/dist/dev/index.html"))
+	// router.StaticFile("/login", pageLoc("/dist/dev/index.html"))
 
-	// router.GET("/", func(c *gin.Context) {
-	// 	http.ServeFile(c.Writer, c.Request, pageLoc("/index.html"))
-	// })
+	router.GET("/product/*d", func(c *gin.Context) {
+		http.ServeFile(c.Writer, c.Request, pageLoc("/dist/dev/index.html"))
+	})
+
+	router.GET("/order/*d", func(c *gin.Context) {
+		http.ServeFile(c.Writer, c.Request, pageLoc("/dist/dev/index.html"))
+	})
+
+	router.GET("/login/*d", func(c *gin.Context) {
+		http.ServeFile(c.Writer, c.Request, pageLoc("/dist/dev/index.html"))
+	})
+
+	router.GET("/admin/*d", func(c *gin.Context) {
+		http.ServeFile(c.Writer, c.Request, pageLoc("/dist/dev/index.html"))
+	})
+
+	router.GET("/home/*d", func(c *gin.Context) {
+		http.ServeFile(c.Writer, c.Request, pageLoc("/dist/dev/index.html"))
+	})
+
+	router.GET("/customer/*d", func(c *gin.Context) {
+		http.ServeFile(c.Writer, c.Request, pageLoc("/dist/dev/index.html"))
+	})
+	// http.Handle("/", http.FileServer(http.Dir(pageLoc("/dist/dev"))))
 
 	// // router.StaticFile("/systemjs.config.js", pageLoc("/systemjs.config.js"))
 	router.StaticFS("/dist/dev", http.Dir(pageLoc("/dist/dev")))
@@ -63,7 +87,8 @@ func main() {
 	//router.GET("/", handlers.LandingHandler)
 
 	router.NoRoute(func(c *gin.Context) {
-		http.ServeFile(c.Writer, c.Request, pageLoc("/index.html"))
+		fmt.Printf("%v\n", "No Route!")
+		http.ServeFile(c.Writer, c.Request, pageLoc("/dist/dev/index.html"))
 	})
 
 	//Run the server
