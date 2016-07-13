@@ -16,8 +16,8 @@ func (c *DbConn) purgeExpired() {
 }
 
 func (c *DbConn) CullSessions() {
-	// for {
-	// 	c.purgeExpired()
-	// 	time.Sleep(purgePeriod)
-	// }
+	for {
+		// c.purgeExpired()
+		// time.Sleep(purgePeriod)
+	}
 }
