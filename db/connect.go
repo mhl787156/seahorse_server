@@ -1,6 +1,8 @@
 package db
 
 import (
+	"fmt"
+
 	"gopkg.in/mgo.v2"
 )
 
@@ -30,7 +32,7 @@ func MongoConnect(connectURL string) *DbConn {
 	newConn.Session, err = mgo.Dial(connectURL)
 
 	if err != nil {
-		panic("Could not connect to Mongo Database. Now exiting.\n")
+		panic(fmt.Sprintf("Could not connect to Mongo Database(%v). Now exiting.\n", connectURL))
 	}
 
 	newConn.Session.SetSafe(&mgo.Safe{})
@@ -39,6 +41,10 @@ func MongoConnect(connectURL string) *DbConn {
 }
 
 // Connect connects to rethinkDB
-func Connect() {
-	MongoSession = MongoConnect(MongoDBUrl)
+func Connect(dburl string) {
+	if dburl == "" {
+		dburl = MongoDBUrl
+	}
+
+	MongoSession = MongoConnect(dburl)
 }

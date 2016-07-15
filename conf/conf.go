@@ -24,5 +24,6 @@ func GetConfig() ServerConfig {
 		conf.HtmlDir = siteRoot
 		conf.DBIPAddress = dbipaddress
 	}
+	fmt.Println("Config file successfully read")
 	return conf
 }

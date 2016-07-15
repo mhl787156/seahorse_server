@@ -21,9 +21,6 @@ func APIHandlers(router *gin.Engine) {
 
 	//Handlers for '/admin/* endpoints
 
-	//Handlers for '/auth/* endpoints
-	router.POST(URI+"auth/login", loginUser)
-
 	//Handlers for '/product/* endpoints
 
 	// //Handlers for '/user/*' endpoints

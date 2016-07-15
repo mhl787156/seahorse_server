@@ -11,9 +11,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	needLoginURLs = []string{
+		"/home/",
+		"/customers/",
+		"/orders/",
+		"/admin/",
+		"/me/",
+	}
+)
+
+func inLoginUrls(path string) bool {
+	for _, p := range needLoginURLs {
+		if p == path {
+			return true
+		}
+	}
+	return false
+}
+
 func AuthMiddleware(c *gin.Context) {
-	fmt.Println(c.Request.URL.Path)
-	if c.Request.URL.Path == "/dashboard/" || c.Request.URL.Path == "/studio/" || c.Request.URL.Path == "/profile/" {
+	fmt.Println("Request Url path: " + c.Request.URL.Path)
+	// if inLoginUrls(c.Request.URL.Path) {
+	if true {
 		if isLoggedIn(c) {
 			c.Next()
 		} else {
@@ -23,7 +43,7 @@ func AuthMiddleware(c *gin.Context) {
 	}
 	if c.Request.URL.Path == "/login" || c.Request.URL.Path == "/" {
 		if isLoggedIn(c) {
-			c.Redirect(302, "/dashboard")
+			c.Redirect(302, "/home")
 			c.Abort()
 		} else {
 			c.Next()
