@@ -2,47 +2,6 @@ package db
 
 import "github.com/mhl787156/seahorse_server/models"
 
-func (c *DbConn) GetUUID() string {
-	// query, err := gorethink.UUID().Run(c.Session)
-	// if err != nil {
-	// 	panic("Database broke again")
-	// } else {
-	// 	var uuid string
-	// 	err = query.One(&uuid)
-	// 	if err != nil {
-	// 		panic("Could not generate a uuid")
-	// 	} else {
-	// 		return uuid
-	// 	}
-	// }
-	return ""
-}
-
-func (c *DbConn) SearchUsers(queryStr string, limit int) ([]models.User, error) {
-	// query, err := UserTable.Filter(func(user gorethink.Term) gorethink.Term {
-	// 	nameMatches := user.Field("name").Match(queryStr)
-	// 	emailMatches := user.Field("email").Match(queryStr)
-	// 	return gorethink.Or(nameMatches, emailMatches)
-	// }).Filter(map[string]interface{}{
-	// 	"private": false,
-	// }).Run(c.Session)
-
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// defer query.Close()
-
-	// foundUsers := []models.User{}
-	// err = query.All(&foundUsers)
-	// if err != nil {
-	// 	return nil, err
-	// } else {
-	// 	return foundUsers, nil
-	// }
-	return nil, nil
-}
-
 func (c *DbConn) WriteSession(session models.Session) error {
 	// resp, err := SessionTable.Insert(session).RunWrite(c.Session)
 	// if err != nil {
@@ -181,18 +140,6 @@ func (c *DbConn) GetSession(sessionKey string) (*models.Session, bool, error) {
 	return nil, false, nil
 }
 
-func (c *DbConn) ModifyUser(user *models.User) (bool, error) {
-	// res, err := UserTable.Get(user.Id).Update(*user).RunWrite(c.Session)
-	// if err != nil {
-	// 	return false, err
-	// } else if res.Replaced == 0 {
-	// 	return false, nil
-	// } else {
-	// 	return true, err
-	// }
-	return false, nil
-}
-
 func (c *DbConn) GetSnippets(uid string) ([]string, error) {
 	// query, err := SnippetTable.Filter(map[string]interface{}{
 	// 	"owner": uid,
@@ -217,44 +164,6 @@ func (c *DbConn) GetSnippets(uid string) ([]string, error) {
 	// 	}
 	// }
 	return nil, nil
-}
-
-func (c *DbConn) GetUser(uid string) (*models.User, bool, error) {
-	// query, err := UserTable.Get(uid).Run(c.Session)
-	// if err != nil {
-	// 	return nil, false, err
-	// }
-
-	// defer query.Close()
-
-	// //Check that a result was found
-	// if query.IsNil() {
-	// 	//No results were found
-	// 	return nil, false, nil
-	// } else {
-	// 	foundUser := models.User{}
-	// 	err = query.One(&foundUser)
-	// 	if err != nil {
-	// 		return nil, false, err
-	// 	} else {
-	// 		return &foundUser, true, nil
-	// 	}
-	// }
-	return nil, false, nil
-}
-
-func (c *DbConn) WriteUser(user models.User) error {
-	// resp, err := UserTable.Insert(user).RunWrite(c.Session)
-	// if err != nil {
-	// 	return err
-	// } else if resp.Errors != 0 {
-	// 	return errors.New("Database insert failed")
-	// } else if resp.Inserted != 1 {
-	// 	return errors.New("Incorrect number of users inserted")
-	// } else {
-	// 	return nil
-	// }
-	return nil
 }
 
 func (c *DbConn) GetFBUser(fid string) (*models.User, bool, error) {

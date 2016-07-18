@@ -8,6 +8,7 @@ import (
 	// "github.com/mhl787156/seahorse_server/auth"
 	"github.com/mhl787156/seahorse_server/conf"
 	"github.com/mhl787156/seahorse_server/db"
+	"github.com/mhl787156/seahorse_server/handlers"
 	"github.com/mhl787156/seahorse_server/middlewares"
 )
 
@@ -31,8 +32,8 @@ func main() {
 
 	// Middlewares
 	// router.Use(middlewares.Connect)
-	router.Use(middlewares.ErrorHandler)
-	router.Use(middlewares.AuthMiddleware)
+	// router.Use(middlewares.ErrorHandler)
+	// router.Use(middlewares.AuthMiddleware)
 	router.Use(middlewares.CORS)
 
 	// //Serve static angular files
@@ -43,7 +44,7 @@ func main() {
 	router.StaticFS("/node_modules", http.Dir(pageLoc("/node_modules")))
 
 	// //API Endpoints
-	// handlers.APIHandlers(router)
+	handlers.APIHandlers(router)
 
 	// //Redirect for logged-in users
 	// router.GET("/loggedin", func(c *gin.Context) {

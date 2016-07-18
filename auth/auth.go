@@ -5,12 +5,19 @@ import (
 	// "fmt"
 	// "time"
 
+	// "github.com/dgrijalva/jwt-go"
+
 	"github.com/gin-gonic/gin"
 	"github.com/mhl787156/seahorse_server/db"
+	// "github.com/mhl787156/seahorse_server/models"
 )
 
 const sessionCookieName string = "apx_session"
 
+/*
+*	Auth Handler called by middleware on all requests that are not login
+* 	Or called directly by handlers to check validity before response is returned
+*/
 func AuthHandler(c *gin.Context) {
 	// //Get the authentication token from the request
 	// authToken := c.Query("auth_token")
@@ -22,40 +29,6 @@ func AuthHandler(c *gin.Context) {
 	// 	//Token is invalid
 	// 	panic("Token error, should probably handle this better...")
 	// }
-	// sessionKey := NewSession(uid, rdb)
-	// fmt.Println("Made new session.")
-	// c.SetCookie(sessionCookieName, sessionKey.SessionKey, sessionDuration, "/", "apx.twintailsare.moe", false, false)
-}
-
-//Authenticates an existing user session and retrieves the
-//user ID it was assigned to
-func AuthSession(c *gin.Context, rdb *db.DbConn) (string, bool, error) {
-	// //Get cookie from the gin router
-	// sessionKey, err := c.Cookie(sessionCookieName)
-	// if err != nil {
-	// 	return "", false, err
-	// 	//Cookie not found, apparently...
-	// }
-
-	// //Lookup session in database
-	// session, found, err := rdb.GetSession(sessionKey)
-	// if err != nil {
-	// 	fmt.Println("couldnt run query")
-	// 	return "", false, err
-	// }
-	// if !found {
-	// 	fmt.Println("no matching cookies")
-	// 	return "", false, nil
-	// } else {
-	// 	curTime := time.Now().UTC().Unix()
-	// 	expireTime := session.Expires
-	// 	if expireTime < curTime {
-	// 		return "", false, nil
-	// 	} else {
-	// 		return session.UID, true, nil
-	// 	}
-	// }
-	return "", false, nil
 }
 
 func AuthenticateUser(token string, rdb *db.DbConn) (string, error) {

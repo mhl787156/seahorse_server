@@ -1,9 +1,9 @@
 package models
 
-// const (
-// 	// CollectionCustomers holds the name of the customers collection
-// 	CollectionCustomers = "customers"
-// )
+const (
+	// CollectionCustomers holds the name of the customers collection
+	CollectionCustomers = "customers"
+)
 
 /*Customer Model*/
 type Customer struct {

@@ -13,11 +13,13 @@ var (
 
 const (
 	//MongoDBUrl Parameters
-	MongoDBUrl = "localhost:27017"
+	MongoDBUrl   = "localhost:27017"
+	DatabaseName = "seahorsedb"
 )
 
 // DBConn
 type DbConn struct {
+	DB            *mgo.Database
 	Session       *mgo.Session
 	DialInfo      *mgo.DialInfo
 	ConnectionURL string
@@ -35,12 +37,13 @@ func MongoConnect(connectURL string) *DbConn {
 		panic(fmt.Sprintf("Could not connect to Mongo Database(%v). Now exiting.\n", connectURL))
 	}
 
+	newConn.DB = newConn.Session.DB(DatabaseName)
 	newConn.Session.SetSafe(&mgo.Safe{})
 
 	return &newConn
 }
 
-// Connect connects to rethinkDB
+// Connect connects to mongodb
 func Connect(dburl string) {
 	if dburl == "" {
 		dburl = MongoDBUrl

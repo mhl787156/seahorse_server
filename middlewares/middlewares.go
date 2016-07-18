@@ -30,6 +30,7 @@ func inLoginUrls(path string) bool {
 	return false
 }
 
+/*AuthMiddleware should redirect user to login page if not logged in*/
 func AuthMiddleware(c *gin.Context) {
 	fmt.Println("Request Url path: " + c.Request.URL.Path)
 	// if inLoginUrls(c.Request.URL.Path) {
@@ -76,7 +77,9 @@ func ErrorHandler(c *gin.Context) {
 	}
 }
 
+/*CORS adds a Cords header to the request so that it will get accepted*/
 func CORS(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	c.Next()
 }

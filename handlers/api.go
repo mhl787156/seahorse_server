@@ -14,14 +14,19 @@ func APIHandlers(router *gin.Engine) {
 	router.GET(URI+"me", getMeHandler)
 
 	//Handlers for '/customer/*'endpoints
-	router.GET(URI+"customer/:id", getCustomer)
-	router.GET(URI+"search/customer/:query", searchCustomer)
+	// router.GET(URI+"customer/:id", getCustomer)
+	// router.GET(URI+"search/customer/:query", searchCustomer)
 
 	//Handlers for '/order/*'endpoints
 
 	//Handlers for '/admin/* endpoints
+	router.POST(URI+"admin/newuser", newUser)
 
 	//Handlers for '/product/* endpoints
+
+	//Handler for '/login endpoints
+	router.POST(URI+"login", loginUser)
+	router.POST(URI+"setpassword", setUserPassword)
 
 	// //Handlers for '/user/*' endpoints
 	// router.GET("/api/user/:uid", getUser)
