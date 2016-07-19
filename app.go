@@ -30,6 +30,9 @@ func main() {
 	//Start function to clear expired sessions
 	go db.MongoSession.CullSessions()
 
+	// Check that there is at least one admin user
+	handlers.CheckAdmin()
+
 	// Middlewares
 	// router.Use(middlewares.Connect)
 	// router.Use(middlewares.ErrorHandler)

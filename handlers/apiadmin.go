@@ -13,6 +13,22 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// checkAdmin is the initial check to see ensure that there exists at least one admin in the system
+// if no admin is found, a new user is inserted into the database of username 'admin'
+// password is not set, the user must set a password for this user.
+func CheckAdmin() {
+	mdb := db.MongoSession
+	_, found, err2 := mdb.SearchUsers(bson.M{"admin": true}, 1)
+	if !found || err2 != nil {
+		mdb.WriteUser(models.User{
+			ID:        uuid.NewV4().String(),
+			Admin:     true,
+			DateAdded: time.Now().Unix(),
+			Username:  "admin",
+		})
+	}
+}
+
 // loginUser is POST request handler for the login of a User (Employee)
 // Post body contains LoginDetails.
 // First we check to see if the user exists, if not, we pass back a 404
@@ -39,7 +55,7 @@ func loginUser(c *gin.Context) {
 	}
 
 	if !found {
-		c.String(404, "{\"code\": 1002, \"message\": \"User does not exist\"}")
+		c.String(400, "{\"code\": 1002, \"message\": \"User does not exist\"}")
 		return
 	}
 
@@ -48,13 +64,13 @@ func loginUser(c *gin.Context) {
 	usersecure, found, _ := mdb.GetUserSecure(user.ID)
 
 	if !found {
-		c.String(400, "{\"code\": 1002, \"message\": \"User needs to set password\"}")
+		c.String(401, "{\"code\": 1002, \"message\": \"User needs to set password\"}")
 		return
 	}
 
 	// Does the password match
 	if bcrypt.CompareHashAndPassword(usersecure.Password, []byte(logindetails.Password)) != nil {
-		c.String(400, "{\"code\": 1002, \"message\": \"Password does not match\"}")
+		c.String(422, "{\"code\": 1003, \"message\": \"Password does not match\"}")
 		return
 	}
 
@@ -101,7 +117,7 @@ func setUserPassword(c *gin.Context) {
 	}
 
 	if !found {
-		c.String(404, "{\"code\": 1002, \"message\": \"User does not exist\"}")
+		c.String(400, "{\"code\": 1002, \"message\": \"User does not exist\"}")
 		return
 	}
 

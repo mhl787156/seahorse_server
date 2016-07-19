@@ -56,3 +56,4 @@ func APIHandlers(router *gin.Engine) {
 	// router.POST("/api/snippetcontent/:sid", writeSnippetContent)
 	// router.DELETE("/api/snippet/:sid", delSnippet)
 }
+

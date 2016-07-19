@@ -1,6 +1,10 @@
 package db
 
-import "github.com/mhl787156/seahorse_server/models"
+import (
+	"fmt"
+
+	"github.com/mhl787156/seahorse_server/models"
+)
 
 //GetUUID generates a new Unique Identifier to use as an ID
 func (c *DbConn) GetUUID() string {
@@ -35,7 +39,7 @@ func (c *DbConn) GetUserByID(id string) (*models.User, bool, error) {
 	query := collection.FindId(id)
 
 	//Check that a result was found
-	if query == nil {
+	if n, _ := query.Count(); n == 0 {
 		//No results were found
 		return nil, false, nil
 	}
@@ -58,7 +62,7 @@ func (c *DbConn) SearchUsers(queryStr interface{}, limit int) ([]models.User, bo
 	query := collection.Find(queryStr).Limit(limit)
 
 	//Check that a result was found
-	if query == nil {
+	if n, _ := query.Count(); n == 0 {
 		//No results were found
 		return nil, false, nil
 	}
@@ -92,7 +96,7 @@ func (c *DbConn) GetUserOrders(id string) (*models.UserOrders, bool, error) {
 	query := collection.FindId(id)
 
 	//Check that a result was found
-	if query == nil {
+	if n, _ := query.Count(); n == 0 {
 		//No results were found, new one created for this user
 		var list []string
 		err := collection.Insert(models.UserOrders{ID: id, OrderIds: list})
@@ -119,7 +123,7 @@ func (c *DbConn) GetUserSecure(id string) (*models.UserSecure, bool, error) {
 	query := collection.FindId(id)
 
 	//Check that a result was found
-	if query == nil {
+	if n, _ := query.Count(); n == 0 {
 		//No results were found
 		return nil, false, nil
 	}
@@ -137,13 +141,13 @@ func (c *DbConn) GetUserSecure(id string) (*models.UserSecure, bool, error) {
 func (c *DbConn) SetUserSecure(id string, pword []byte) (bool, error) {
 	collection := c.DB.C(models.CollectionUserSecure)
 	query := collection.FindId(id)
-	n, err := query.Count()
-	if n == 0 {
+	if n, _ := query.Count(); n == 0 {
 		//No remaining password exists for this user, can add a password
+		fmt.Println("Password written" + string(pword))
 		err := collection.Insert(models.UserSecure{ID: id, Password: pword, SecretKey: nil})
 		return true, err
 	}
-	return false, err
+	return false, nil
 }
 
 // SetUserSecretKey sets the User secure for a given known user if the user exists.
