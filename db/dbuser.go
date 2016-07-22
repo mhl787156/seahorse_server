@@ -3,26 +3,10 @@ package db
 import (
 	"fmt"
 
+	"gopkg.in/mgo.v2/bson"
+
 	"github.com/mhl787156/seahorse_server/models"
 )
-
-//GetUUID generates a new Unique Identifier to use as an ID
-func (c *DbConn) GetUUID() string {
-
-	// query, err := gorethink.UUID().Run(c.Session)
-	// if err != nil {
-	// 	panic("Database broke again")
-	// } else {
-	// 	var uuid string
-	// 	err = query.One(&uuid)
-	// 	if err != nil {
-	// 		panic("Could not generate a uuid")
-	// 	} else {
-	// 		return uuid
-	// 	}
-	// }
-	return ""
-}
 
 // WriteUser inserts a new User into the database.
 // User is inserted into the users collection
@@ -155,5 +139,5 @@ func (c *DbConn) SetUserSecure(id string, pword []byte) (bool, error) {
 // Returns an ErrNotFound if user does not exist
 func (c *DbConn) SetUserSecretKey(userID string, secretkey interface{}) error {
 	collection := c.DB.C(models.CollectionUserSecure)
-	return collection.UpdateId(userID, secretkey)
+	return collection.UpdateId(userID, bson.M{"$set": secretkey})
 }
