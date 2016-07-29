@@ -32,24 +32,26 @@ func inLoginUrls(path string) bool {
 
 /*AuthMiddleware should redirect user to login page if not logged in*/
 func AuthMiddleware(c *gin.Context) {
-	fmt.Println("Request Url path: " + c.Request.URL.Path)
-	// if inLoginUrls(c.Request.URL.Path) {
-	if true {
-		if isLoggedIn(c) {
-			c.Next()
-		} else {
-			c.Redirect(302, "/login")
-			c.Abort()
-		}
-	}
-	if c.Request.URL.Path == "/login" || c.Request.URL.Path == "/" {
-		if isLoggedIn(c) {
-			c.Redirect(302, "/home")
-			c.Abort()
-		} else {
-			c.Next()
-		}
-	}
+	// fmt.Println("Request Url path: " + c.Request.URL.Path)
+
+	value, exists := c.Get("authorization")
+	fmt.Println("value: ", value, exists)
+	// if true {
+	// 	if isLoggedIn(c) {
+	// 		c.Next()
+	// 	} else {
+	// 		c.Redirect(302, "/login")
+	// 		c.Abort()
+	// 	}
+	// }
+	// if c.Request.URL.Path == "/login" || c.Request.URL.Path == "/" {
+	// 	if isLoggedIn(c) {
+	// 		c.Redirect(302, "/home")
+	// 		c.Abort()
+	// 	} else {
+	// 		c.Next()
+	// 	}
+	// }
 }
 
 func isLoggedIn(c *gin.Context) bool {

@@ -7,8 +7,8 @@ const (
 
 /*Customer Model*/
 type Customer struct {
-	ID        int    `json:"id" bson:"_id,omitempty"`
-	DateAdded string `json:"date_added" bson:"date_added"`
+	ID        string `json:"id" bson:"_id,omitempty"`
+	DateAdded int64  `json:"date_added" bson:"date_added"`
 
 	Firstname string `json:"firstname" bson:"firstname"`
 	Surname   string `json:"surname" bson:"surname"`
@@ -29,3 +29,4 @@ type Customer struct {
 
 	OrderIds []string `json:"orderids" bson:"orderids"`
 }
+

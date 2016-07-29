@@ -1,26 +1,64 @@
 package handlers
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/gin-gonic/gin"
-	// "github.com/mhl787156/seahorse_server/db"
-	// "github.com/mhl787156/seahorse_server/models"
+	"github.com/satori/go.uuid"
+
+	"github.com/mhl787156/seahorse_server/db"
+	"github.com/mhl787156/seahorse_server/models"
 )
 
-func getCustomer(c *gin.Context) {
-	// 	 rdb := db.MongoSession
+// SEARCHING CUSTOMER LIST
+func getCustomerListBy(c *gin.Context) {
+	mdb := db.MongoSession
+	_, err := mdb.GetCustomerList(10)
 
-	// 	// targetId := c.Param("id")
-	// 	// target, found, err := rdb.GetUser(targetId)
-	// 	// if err != nil {
-	// 	// 	c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
-	// 	// } else if !found {
-	// 	// 	c.String(404, "{\"code\": 1002, \"message\": \"User does not exist\"}")
-	// 	// } else if target.Private {
-	// 	// 	c.String(403, "{\"code\": 1004, \"message\": \"User has set their profile to private\"}")
-	// 	// } else {
-	// 	// 	c.Header("Access-Control-Allow-Origin", "*")
-	// 	// 	c.JSON(200, target)
-	// 	// }
+	if err != nil {
+		c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
+	} else {
+		c.JSON(200, "FOUND SOME STUFF < READ THE CONSOLE")
+	}
+}
+
+
+
+// GETTING/ EDITING/ DELETING a specific CUSTOMER
+func getCustomer(c *gin.Context) {
+	mdb := db.MongoSession
+	targetId := c.Param("id")
+	target, found, err := mdb.GetCustomerByID(targetId)
+	if err != nil {
+		c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
+	} else if !found {
+		c.String(404, "{\"code\": 1002, \"message\": \"User does not exist\"}")
+	} else {
+		c.JSON(200, target)
+	}
+}
+
+func newCustomer(c *gin.Context) {
+	mdb := db.MongoSession
+	id := uuid.NewV4().String()
+	customer := models.Customer{
+		ID: 	   id,
+		DateAdded: time.Now().Unix(),
+	}
+	fmt.Println("Customers", customer)
+	err := mdb.WriteCustomer(customer)
+	
+	if(err != nil) {
+		c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
+	} else {
+		c.JSON(200, customer)
+	}
+
+}
+
+func editCustomer(c *gin.Context) {
+
 }
 
 // func postCustomer(c *gin.Context, mod string) {
