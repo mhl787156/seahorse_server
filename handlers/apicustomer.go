@@ -26,6 +26,19 @@ func getCustomerListBy(c *gin.Context) {
 	}
 }
 
+// GETS A LIST WITH MORE GENERAL INFORMATION
+func getCustomerFullList(c *gin.Context) {
+	mdb := db.MongoSession
+
+	customers, err := mdb.GetCustomerList(10, "", "")
+
+	if err != nil {
+		c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
+	} else {
+		c.JSON(200, customers)
+	}
+}
+
 // GETTING/ EDITING/ DELETING a specific CUSTOMER
 func getCustomer(c *gin.Context) {
 	mdb := db.MongoSession

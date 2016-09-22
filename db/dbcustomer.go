@@ -53,6 +53,26 @@ func (c *DbConn) GetCustomerList(n int, name string, postcode string) ([]models.
 	return result, nil
 }
 
+// GetCustomerFullList retrieves a list of all customer Ids
+// Returns Customer, or an error
+func (c *DbConn) GetCustomerFullList(n int) ([]models.ListFullReturn, error) {
+
+	var result []models.ListFullReturn
+
+	sel := bson.M{"id": 1, "firstname": 1, "surname": 1, "postcode": 1}
+
+	collection := c.DB.C(models.CollectionCustomers)
+	err := collection.Find(nil).Select(sel).All(&result)
+
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range result {
+		fmt.Println(item)
+	}
+	return result, nil
+}
+
 // GetCustomerByID looks in the database by uuid.
 // Returns the Customer, a bool to check whether any Customer was found,
 // or whether an Error was returned

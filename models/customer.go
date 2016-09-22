@@ -39,3 +39,12 @@ type ListReturn struct {
 	SurName   string `json:"surname" bson:"surname"`
 	PostCode  string `json:"postcode" bson:"postcode"`
 }
+
+/*ListFullReturn Model - return type when a list is requested for dynamic search*/
+type ListFullReturn struct {
+	ID        string `json:"id" bson:"_id,omitempty"`
+	Date      int    `json:"date" bson: "date"`
+	FirstName string `json:"firstname" bson:"firstname"`
+	SurName   string `json:"surname" bson:"surname"`
+	PostCode  string `json:"postcode" bson:"postcode"`
+}

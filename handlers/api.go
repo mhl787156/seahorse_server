@@ -14,6 +14,7 @@ func APIHandlers(router *gin.Engine) {
 	//Handlers for '/customer/*'endpoints
 	router.GET(URI+"customer/get/:id", getCustomer)
 	router.GET(URI+"customer/list", getCustomerListBy)
+	router.GET(URI+"customer/fulllist", getCustomerFullList)
 	router.GET(URI+"customer/new", newCustomer)
 	// router.GET(URI+"customer/search/:query", searchCustomer)
 
