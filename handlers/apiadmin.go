@@ -91,7 +91,7 @@ func loginUser(c *gin.Context) {
 	}
 
 	// If everything works, return the token
-	c.JSON(200, gin.H{"token": token})
+	c.JSON(200, gin.H{"user": user.ID, "token": token})
 }
 
 // setUserPassword is POST handler for a user setting their password for the first time
@@ -167,4 +167,3 @@ func newUser(c *gin.Context) {
 		c.JSON(200, "User Added")
 	}
 }
-

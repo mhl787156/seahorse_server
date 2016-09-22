@@ -5,66 +5,75 @@ package middlewares
 
 import (
 	"net/http"
+	"strings"
 
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mhl787156/seahorse_server/auth"
+	"github.com/mhl787156/seahorse_server/db"
 )
-
-var (
-	needLoginURLs = []string{
-		"/home/",
-		"/customers/",
-		"/orders/",
-		"/admin/",
-		"/me/",
-	}
-)
-
-func inLoginUrls(path string) bool {
-	for _, p := range needLoginURLs {
-		if p == path {
-			return true
-		}
-	}
-	return false
-}
 
 /*AuthMiddleware should redirect user to login page if not logged in*/
 func AuthMiddleware(c *gin.Context) {
-	// fmt.Println("Request Url path: " + c.Request.URL.Path)
+	if !strings.Contains(c.Request.URL.Path, "api") || c.Request.URL.Path == "/api/login" || c.Request.URL.Path == "/api/setpassword" {
+		return
+	}
 
-	value, exists := c.Get("authorization")
-	fmt.Println("value: ", value, exists)
-	// if true {
-	// 	if isLoggedIn(c) {
-	// 		c.Next()
-	// 	} else {
-	// 		c.Redirect(302, "/login")
-	// 		c.Abort()
-	// 	}
-	// }
-	// if c.Request.URL.Path == "/login" || c.Request.URL.Path == "/" {
-	// 	if isLoggedIn(c) {
-	// 		c.Redirect(302, "/home")
-	// 		c.Abort()
-	// 	} else {
-	// 		c.Next()
-	// 	}
-	// }
+	if c.Request.Method == "OPTIONS" {
+		return
+	}
+
+	res := c.Request.Header.Get("Authorization")
+	if res == "" {
+		c.String(404, "{\"code\": 1003, \"message\": \"Authorization token not sent\"}")
+		c.Abort()
+		return
+	}
+
+	authtoken := strings.Split(res, " ")
+
+	if authtoken[0] != "Bearer" || len(authtoken) != 3 || authtoken[1] == "" || authtoken[2] == "" {
+		c.String(404, "{\"code\": 1004, \"message\": \"Authorization token not bearer format\"}")
+		c.Abort()
+		return
+	}
+
+	uid := authtoken[1]
+	if uid == "" || uid == "null" {
+		c.String(404, "{\"code\": 1005, \"message\": \"No UID provied in token\"}")
+		c.Abort()
+		return
+	}
+	fmt.Println("Authenticated API Request by:", uid)
+
+	token := authtoken[2]
+
+	if !authenticateToken(uid, token) {
+		c.String(404, "{\"code\": 1006, \"message\": \"Token not accepted\"}")
+		c.Abort()
+		return
+	}
+
+	c.Next()
 }
 
-func isLoggedIn(c *gin.Context) bool {
-	// rdb := db.ReactSession
-	// _, found, err := auth.AuthSession(c, rdb)
-	// if !found {
-	//   return false
-	// } else if err != nil {
-	//   panic("wat")
-	// } else {
-	//   return true
-	// }
-	return false
+func authenticateToken(uid string, token string) bool {
+	mdb := db.MongoSession
+	usersecure, found, err := mdb.GetUserSecure(uid)
+	if !found {
+		return false
+	}
+	if err != nil {
+		panic("Database Error")
+	}
+
+	founduid, authd := auth.Authenticate(token, usersecure.SecretKey)
+
+	if founduid != uid {
+		return false
+	}
+	return authd
 }
 
 // ErrorHandler is a middleware to handle errors encountered during requests
@@ -81,7 +90,5 @@ func ErrorHandler(c *gin.Context) {
 
 /*CORS adds a Cords header to the request so that it will get accepted*/
 func CORS(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-	c.Next()
+
 }

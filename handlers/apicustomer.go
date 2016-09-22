@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -14,26 +13,28 @@ import (
 // SEARCHING CUSTOMER LIST
 func getCustomerListBy(c *gin.Context) {
 	mdb := db.MongoSession
-	_, err := mdb.GetCustomerList(10)
+
+	name := c.Query("name")
+	postcode := c.Query("postcode")
+
+	customers, err := mdb.GetCustomerList(10, name, postcode)
 
 	if err != nil {
 		c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
 	} else {
-		c.JSON(200, "FOUND SOME STUFF < READ THE CONSOLE")
+		c.JSON(200, customers)
 	}
 }
-
-
 
 // GETTING/ EDITING/ DELETING a specific CUSTOMER
 func getCustomer(c *gin.Context) {
 	mdb := db.MongoSession
-	targetId := c.Param("id")
-	target, found, err := mdb.GetCustomerByID(targetId)
+	targetID := c.Param("id")
+	target, found, err := mdb.GetCustomerByID(targetID)
 	if err != nil {
 		c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
 	} else if !found {
-		c.String(404, "{\"code\": 1002, \"message\": \"User does not exist\"}")
+		c.String(404, "{\"code\": 1002, \"message\": \"Customer does not exist\"}")
 	} else {
 		c.JSON(200, target)
 	}
@@ -43,22 +44,34 @@ func newCustomer(c *gin.Context) {
 	mdb := db.MongoSession
 	id := uuid.NewV4().String()
 	customer := models.Customer{
-		ID: 	   id,
+		ID:        id,
 		DateAdded: time.Now().Unix(),
 	}
-	fmt.Println("Customers", customer)
 	err := mdb.WriteCustomer(customer)
-	
-	if(err != nil) {
+
+	if err != nil {
 		c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
 	} else {
-		c.JSON(200, customer)
+		c.JSON(200, customer.ID)
 	}
-
 }
 
-func editCustomer(c *gin.Context) {
+func modifyCustomer(c *gin.Context) {
+	var customer models.Customer
+	err := c.BindJSON(&customer)
 
+	if err != nil {
+		c.String(500, "{\"code\": -1, \"message\": \"Customer Binding Failed\"}")
+	}
+
+	mdb := db.MongoSession
+	err1 := mdb.ModifyCustomer(&customer)
+
+	if err1 != nil {
+		c.String(500, "{\"code\": -1, \"message\": \"An unexpected error occurred\"}")
+	} else {
+		c.JSON(200, customer.ID)
+	}
 }
 
 // func postCustomer(c *gin.Context, mod string) {

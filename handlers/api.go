@@ -1,8 +1,6 @@
 package handlers
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "github.com/gin-gonic/gin"
 
 /*URI - Base URI*/
 const URI string = "/api/"
@@ -15,11 +13,11 @@ func APIHandlers(router *gin.Engine) {
 
 	//Handlers for '/customer/*'endpoints
 	router.GET(URI+"customer/get/:id", getCustomer)
-	router.GET(URI+"customer/list/*action", getCustomerListBy)
+	router.GET(URI+"customer/list", getCustomerListBy)
 	router.GET(URI+"customer/new", newCustomer)
-	router.GET(URI+"customer/search/:query", searchCustomer)
+	// router.GET(URI+"customer/search/:query", searchCustomer)
 
-	router.POST(URI+"customer/:id", editCustomer)
+	router.POST(URI+"customer/update", modifyCustomer)
 	// router.POST(URI+"customer/:id/:order")
 
 	//Handlers for '/order/*'endpoints
@@ -61,4 +59,3 @@ func APIHandlers(router *gin.Engine) {
 	// router.POST("/api/snippetcontent/:sid", writeSnippetContent)
 	// router.DELETE("/api/snippet/:sid", delSnippet)
 }
-

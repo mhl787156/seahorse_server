@@ -8,7 +8,6 @@ import (
 	//"golang.ord/x/crypt/bcrypt"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/mhl787156/seahorse_server/models"
 )
 
 const (
@@ -28,18 +27,31 @@ func GenerateToken(userUUID string) (string, []byte, error) {
 	return tokenString, secretkey, err
 }
 
-func Authenticate(user *models.User) bool {
-	// hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("testing"), 10)
+func Authenticate(tokenString string, secretkey []byte) (string, bool) {
 
-	// testUser := models.User{
-	// 	UUID:     uuid.NewV4(),
-	// 	Username: "haku",
-	// 	Password: string(hashedPassword),
-	// }
+	// Parse takes the token string and a function for looking up the key. The latter is especially
+	// useful if you use multiple keys for your application.  The standard is to use 'kid' in the
+	// head of the token to identify which key to use, but the parsed token (head and claims) is provided
+	// to the callback, providing flexibility.
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 
-	// return user.Username == testUser.Username && bcrypt.CompareHashAndPassword([]byte(testUser.Password), []byte(user.Password)) == nil
-	fmt.Println("Authenticating this User!")
-	return false
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return secretkey, nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		if str, ok := claims["sub"].(string); ok {
+			/* check is string */
+			return str, true
+		}
+	}
+
+	fmt.Println("Error:", err)
+	return "", false
 }
 
 func getTokenRemainingValidity(timestamp interface{}) int {

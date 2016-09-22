@@ -28,5 +28,14 @@ type Customer struct {
 	Notes string `json:"notes" bson:"notes"`
 
 	OrderIds []string `json:"orderids" bson:"orderids"`
+
+	Active bool `json:"active" bson:"active"`
 }
 
+/*ListReturn Model - return type when a list is requested for dynamic search*/
+type ListReturn struct {
+	ID        string `json:"id" bson:"_id,omitempty"`
+	FirstName string `json:"firstname" bson:"firstname"`
+	SurName   string `json:"surname" bson:"surname"`
+	PostCode  string `json:"postcode" bson:"postcode"`
+}
